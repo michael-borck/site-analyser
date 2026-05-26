@@ -1,0 +1,57 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "site-analyser"
+version = "0.1.0"
+description = "Site-quality signals for a deployed URL or a local static-site dir — accessibility, structure, SEO, link health, framework detection, validity"
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+authors = [{ name = "Michael Borck", email = "michael.borck@curtin.edu.au" }]
+keywords = ["website", "accessibility", "wcag", "seo", "crawler", "lighthouse", "analysis", "lens"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+]
+dependencies = [
+    "lens-contract>=0.2.0",
+    "httpx>=0.26.0",
+    "beautifulsoup4>=4.12.0",
+    "html5lib>=1.1",
+    "fastapi>=0.109.0",
+    "uvicorn[standard]>=0.27.0",
+    "python-multipart>=0.0.9",
+    "rich>=13.7.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0.0",
+    "pytest-cov>=4.0.0",
+    "respx>=0.21.0",  # httpx mocking
+]
+
+# Local dev: resolve lens-contract from the sibling checkout. uv strips this from
+# the published wheel — the plain `lens-contract>=0.2.0` PyPI pin remains.
+[tool.uv.sources]
+lens-contract = { path = "../lens-contract", editable = true }
+
+[project.scripts]
+site-analyser = "site_analyser.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/michael-borck/site-analyser"
+Repository = "https://github.com/michael-borck/site-analyser"
+Issues = "https://github.com/michael-borck/site-analyser/issues"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/site_analyser"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
